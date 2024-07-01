@@ -14,7 +14,9 @@ To install this project, follow these steps:
    ```bash
    git clone https://github.com/dharaneechinnu/Hand-Fund
 2.React vs code terminal give 
+```bash
    npm install
 3.react vs code terminal give
+```bash
    npm start
 
