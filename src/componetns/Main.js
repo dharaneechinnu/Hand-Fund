@@ -161,8 +161,9 @@ const ItemCard = styled.div`
 
 const CampaignImage = styled.img`
     width: 100%;
-    height: 200px;
+    height: 200px; 
     object-fit: cover; 
+    object-position: top; 
     border-bottom: 1px solid #333;
 `;
 
