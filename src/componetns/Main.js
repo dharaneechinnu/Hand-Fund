@@ -74,11 +74,11 @@ const Main = () => {
         <Container>
             <Nav onSearch={(query) => console.log('Search query:', query)} />
             <Content>
-                <MainContent>
-                    {loading ? (
-                        <LoadingIndicator><Loader/></LoadingIndicator>
-                     ) : (
-                        filteredCampaigns.map(campaign => (
+                {loading ? (
+                    <LoadingIndicator><Loader/></LoadingIndicator>
+                ) : (
+                    <MainContent>
+                        {filteredCampaigns.map(campaign => (
                             <ItemCard key={campaign.id} onClick={() => navigateToDetails(campaign.id)}>
                                 <CampaignImage src={campaign.image} alt="Campaign" />
                                 <CampaignDetails>
@@ -99,9 +99,9 @@ const Main = () => {
                                     </CampaignInfo>
                                 </CampaignDetails>
                             </ItemCard>
-                        ))
-                    )}
-                </MainContent>
+                        ))}
+                    </MainContent>
+                )}
             </Content>
         </Container>
     );
@@ -122,17 +122,18 @@ const Container = styled.div`
 const Content = styled.div`
     flex: 1;
     display: flex;
+    justify-content: center; 
+    align-items: center;
 `;
 
 const MainContent = styled.main`
-    flex: 1;
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    grid-template-columns: repeat(3, 1fr); 
     grid-gap: 20px;
 
     @media (max-width: 992px) {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
     }
 
     @media (max-width: 576px) {
@@ -150,7 +151,7 @@ const ItemCard = styled.div`
     cursor: pointer;
     display: flex;
     flex-direction: column; 
-    height: 500px; 
+    height: auto; 
     margin-top: 15px;
 
     &:hover {
@@ -160,7 +161,7 @@ const ItemCard = styled.div`
 
 const CampaignImage = styled.img`
     width: 100%;
-    height: 500px;
+    height: 200px;
     object-fit: cover; 
     border-bottom: 1px solid #333;
 `;
@@ -181,6 +182,7 @@ const CampaignTitle = styled.h3`
 const CampaignDescription = styled.p`
     margin-bottom: 10px;
     font-size: 0.9rem;
+    flex-grow: 1;
 `;
 const CampaignInfo = styled.div`
     display: flex;
@@ -194,7 +196,7 @@ const CampaignInfo = styled.div`
 
     p {
         margin: 4px 2px;
-        font-size: 1.5rem;
+        font-size: 1rem;
         font-weight: 600;
     }
 
@@ -208,7 +210,7 @@ const CampaignInfo = styled.div`
         padding: 5px;
         border: 1px solid black;
         border-radius: 5px;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         background-color: black;
     }
 
@@ -240,6 +242,7 @@ const CampaignInfo = styled.div`
             display: flex;
             justify-content: center;
             padding: 2px; 
+          
         }
     }
 `;
@@ -248,7 +251,7 @@ const LoadingIndicator = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 100vh;
     font-size: 1.5rem;
     color: #fff;
 `;
