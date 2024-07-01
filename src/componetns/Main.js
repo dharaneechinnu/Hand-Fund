@@ -28,7 +28,7 @@ const Main = () => {
                     const accounts = await web3Instance.eth.getAccounts();
                     setAccount(accounts[0]);
 
-                    const contractInstance = new web3Instance.eth.Contract(abi, "0x4cd06B44D049536dBD3c4D5e645055F8bC3c3498");
+                    const contractInstance = new web3Instance.eth.Contract(abi, "0x0C7B235Df9582789CEc30F4b37CF2ADE347Aff88");
                     setContract(contractInstance);
 
                     const campaignsCount = await contractInstance.methods.numberOfItems().call();

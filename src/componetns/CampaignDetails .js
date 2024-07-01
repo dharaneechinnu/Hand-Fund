@@ -25,7 +25,7 @@ const CampaignDetails = () => {
 
                     const contractInstance = new web3Instance.eth.Contract(
                         abi,
-                        "0x4cd06B44D049536dBD3c4D5e645055F8bC3c3498"
+                        "0x0C7B235Df9582789CEc30F4b37CF2ADE347Aff88"
                     );
                     setContract(contractInstance);
 
@@ -137,117 +137,115 @@ const CampaignDetails = () => {
         }
     };
 
-    if (loading) {
-        return <LoadingContainer><Loader/></LoadingContainer>;
-    }
-
-    if (!campaign) {
-        return <LoadingContainer>Campaign not found</LoadingContainer>;
-    }
-
-    const filteredDonators = campaign.donators.filter(
+    const filteredDonators = campaign?.donators.filter(
         (donor, index) => campaign.donations[index] !== '0.0000'
     );
 
     return (
         <Container>
             <Nav />
-            <Content>
-                <MainContent>
-                    <RightPanel>
-                        <ImageContainer>
-                            <Image src={campaign.image} alt={campaign.title} />
-                        </ImageContainer>
+            {loading ? (
+               <LoadingIndicator><Loader/></LoadingIndicator>
+            ) : !campaign ? (
+                <LoadingContainer>Campaign not found</LoadingContainer>
+            ) : (
+                <Content>
+                    <MainContent>
+                        <RightPanel>
+                            <ImageContainer>
+                                <Image src={campaign.image} alt={campaign.title} />
+                            </ImageContainer>
 
-                        {campaign.owner && (
-                            <CreatorSection>
-                                <CreatorTitle>Owner</CreatorTitle>
-                                <CreatorInfo>{campaign.owner}</CreatorInfo>
-                            </CreatorSection>
-                        )}
+                            {campaign.owner && (
+                                <CreatorSection>
+                                    <CreatorTitle>Owner</CreatorTitle>
+                                    <CreatorInfo>{campaign.owner}</CreatorInfo>
+                                </CreatorSection>
+                            )}
 
-                        {campaign.description && (
-                            <StorySection>
-                                <SectionTitle>STORY</SectionTitle>
-                                <Description>
-                                    {campaign.description}
-                                </Description>
-                            </StorySection>
-                        )}
+                            {campaign.description && (
+                                <StorySection>
+                                    <SectionTitle>STORY</SectionTitle>
+                                    <Description>
+                                        {campaign.description}
+                                    </Description>
+                                </StorySection>
+                            )}
 
-                        {filteredDonators.length > 0 && (
-                            <DonorsSection>
-                                <SectionTitle>DONATORS</SectionTitle>
-                                <DonorsList>
-                                    {filteredDonators.map(
-                                        (donor, index) => (
-                                            <Donor key={index}>
-                                                {donor} -{' '}
-                                                {campaign.donations[index]} ETH
-                                            </Donor>
-                                        )
-                                    )}
-                                </DonorsList>
-                            </DonorsSection>
-                        )}
-                    </RightPanel>
-                    <LeftPanel>
-                        <FundDetails>
-                            <FundDetailItem>
-                                <h2>
-                                    {Math.ceil(
-                                        (campaign.deadline -
-                                            new Date()) /
-                                            (1000 * 60 * 60 * 24)
-                                    )}
-                                </h2>
-                                <p>Days Left</p>
-                            </FundDetailItem>
-                        </FundDetails>
+                            {filteredDonators.length > 0 && (
+                                <DonorsSection>
+                                    <SectionTitle>DONATORS</SectionTitle>
+                                    <DonorsList>
+                                        {filteredDonators.map(
+                                            (donor, index) => (
+                                                <Donor key={index}>
+                                                    {donor} -{' '}
+                                                    {campaign.donations[index]} ETH
+                                                </Donor>
+                                            )
+                                        )}
+                                    </DonorsList>
+                                </DonorsSection>
+                            )}
+                        </RightPanel>
+                        <LeftPanel>
+                            <FundDetails>
+                                <FundDetailItem>
+                                    <h2>
+                                        {Math.ceil(
+                                            (campaign.deadline -
+                                                new Date()) /
+                                                (1000 * 60 * 60 * 24)
+                                        )}
+                                    </h2>
+                                    <p>Days Left</p>
+                                </FundDetailItem>
+                            </FundDetails>
 
-                        <FundDetails>
-                            <FundDetailItem>
-                                <h2>{campaign.amountCollected}</h2>
-                                <p>ETH Raised of {campaign.target}</p>
-                            </FundDetailItem>
-                        </FundDetails>
+                            <FundDetails>
+                                <FundDetailItem>
+                                    <h2>{campaign.amountCollected}</h2>
+                                    <p>ETH Raised of {campaign.target}</p>
+                                </FundDetailItem>
+                            </FundDetails>
 
-                        <FundDetails>
-                            <FundDetailItem>
-                                <h2>{campaign.donators.length}</h2>
-                                <p>Total Donators</p>
-                            </FundDetailItem>
-                        </FundDetails>
+                            <FundDetails>
+                                <FundDetailItem>
+                                    <h2>{campaign.donators.length}</h2>
+                                    <p>Total Donators</p>
+                                </FundDetailItem>
+                            </FundDetails>
 
-                        <FundSection>
-                            <SectionTitle>FUND</SectionTitle>
-                            <DonateForm onSubmit={handleDonation}>
-                                <Input
-                                    type="number"
-                                    step="0.01"
-                                    id="donationAmount"
-                                    value={donationAmount}
-                                    onChange={(e) =>
-                                        setDonationAmount(
-                                            e.target.value
-                                        )
-                                    }
-                                    required
-                                    placeholder="ETH 0.1"
-                                />
-                                <DonateButton
-                                    type="submit"
-                                    disabled={donating}
-                                >
-                                    {donating
-                                        ? 'Donating...'
-                                        : 'Fund Campaign'}
-                                </DonateButton>
-                            </DonateForm>
-                        </FundSection>
-                    </LeftPanel>
-                </MainContent>
-            </Content>
+                            <FundSection>
+                                <SectionTitle>FUND</SectionTitle>
+                                <DonateForm onSubmit={handleDonation}>
+                                    <Input
+                                        type="number"
+                                        step="1"
+                                        id="donationAmount"
+                                        value={donationAmount}
+                                        onChange={(e) =>
+                                            setDonationAmount(
+                                                e.target.value
+                                            )
+                                        }
+                                        required
+                                        placeholder="ETH 1"
+                                    />
+                                    <DonateButton
+                                        type="submit"
+                                        disabled={donating}
+                                    >
+                                        {donating
+                                            ? 'Donating...'
+                                            : 'Fund Campaign'}
+                                    </DonateButton>
+                                </DonateForm>
+                            </FundSection>
+                        </LeftPanel>
+                    </MainContent>
+                </Content>
+            )}
         </Container>
     );
 };
@@ -550,9 +548,18 @@ const LoadingContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    font-size: 1.5rem;
+    height: 100vh;
+    width: 100vw;
+    background-color: #000; 
     color: #fff;
 `;
 
+const LoadingIndicator = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #fff;
+`;
 export default CampaignDetails;
