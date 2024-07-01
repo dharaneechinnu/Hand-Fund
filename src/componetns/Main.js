@@ -129,6 +129,7 @@ const MainContent = styled.main`
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    grid-gap: 20px;
 
     @media (max-width: 992px) {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -148,11 +149,10 @@ const ItemCard = styled.div`
     color: #fff;
     cursor: pointer;
     display: flex;
-    height: 500px;
-    margin-right: 10px;
     flex-direction: column; 
-    margin-top   :15px ;
-  
+    height: 500px; 
+    margin-top: 15px;
+
     &:hover {
         transform: scale(1.02);
     }
@@ -160,7 +160,7 @@ const ItemCard = styled.div`
 
 const CampaignImage = styled.img`
     width: 100%;
-    height: 250px;
+    height: 500px;
     object-fit: cover; 
     border-bottom: 1px solid #333;
 `;
@@ -170,6 +170,7 @@ const CampaignDetails = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between; 
+    height: 100%; 
 `;
 
 const CampaignTitle = styled.h3`
@@ -181,7 +182,6 @@ const CampaignDescription = styled.p`
     margin-bottom: 10px;
     font-size: 0.9rem;
 `;
-
 const CampaignInfo = styled.div`
     display: flex;
     flex-direction: column;
@@ -208,7 +208,7 @@ const CampaignInfo = styled.div`
         padding: 5px;
         border: 1px solid black;
         border-radius: 5px;
-        font-size: 1.1rem;
+        font-size: 0.8rem;
         background-color: black;
     }
 
@@ -223,7 +223,7 @@ const CampaignInfo = styled.div`
 
         .owner {
             padding: 10px;
-            font-size:0.8rem; 
+            font-size: 0.8rem; 
         }
     }
 
