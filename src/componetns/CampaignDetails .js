@@ -98,10 +98,14 @@ const CampaignDetails = () => {
                 return;
             }
             const userAddress = accounts[0];
-            await contract.methods.donateToCampaign(id).send({
+          const paymentresult =  await contract.methods.donateToCampaign(id).send({
                 from: userAddress,
                 value: donationAmountWei,
             });
+            if(paymentresult)
+                {
+                    alert("Payment Successfully Thank You For Donation");
+                }
             console.log(
                 `Donated ${donationAmount} ETH to campaign ${id}`
             );
