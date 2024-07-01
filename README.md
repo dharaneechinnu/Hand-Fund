@@ -13,6 +13,7 @@ To install this project, follow these steps:
 1. Clone the repository to your local machine:
    ```bash
    git clone https://github.com/dharaneechinnu/Hand-Fund
+<<<<<<< HEAD
 2.React vs code terminal give:
    ```bash
    
@@ -20,5 +21,14 @@ To install this project, follow these steps:
 
 3.react vs code terminal give:
 ```bash
+=======
+   
+2.React vs code terminal give: 
+
+   npm install
+
+3.react vs code terminal give:
+
+>>>>>>> 343ef3395af3129260cdf1f8287b6d1fcb3a644b
    npm start
 
