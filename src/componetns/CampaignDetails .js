@@ -4,6 +4,7 @@ import { abi } from '../Abi';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Nav from './Nav';
+import Loader from './Loader';
 
 const CampaignDetails = () => {
     const { id } = useParams();
@@ -137,7 +138,7 @@ const CampaignDetails = () => {
     };
 
     if (loading) {
-        return <LoadingContainer>Loading...</LoadingContainer>;
+        return <LoadingContainer><Loader/></LoadingContainer>;
     }
 
     if (!campaign) {

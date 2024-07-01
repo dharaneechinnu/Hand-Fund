@@ -4,6 +4,7 @@ import { abi } from '../Abi';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
+import Loader from './Loader';
 
 const AddCampaign = () => {
     const [web3, setWeb3] = useState(null);
@@ -64,7 +65,7 @@ const AddCampaign = () => {
             <Nav />
             <Content>
                 {loading ? (
-                    <LoadingIndicator>Loading...</LoadingIndicator>
+                    <LoadingIndicator><Loader/></LoadingIndicator>
                 ) : (
                     <MainContent>
                         <FormContainer>
