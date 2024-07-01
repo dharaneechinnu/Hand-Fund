@@ -12,6 +12,7 @@ const CampaignDetails = () => {
     const [contract, setContract] = useState(null);
     const [donationAmount, setDonationAmount] = useState('');
     const [donating, setDonating] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const init = async () => {
@@ -27,9 +28,7 @@ const CampaignDetails = () => {
                     );
                     setContract(contractInstance);
 
-                    const campaignData = await contractInstance.methods
-                        .getCampaign(id)
-                        .call();
+                    const campaignData = await contractInstance.methods.getCampaign(id).call();
                     if (!campaignData) {
                         throw new Error(`Campaign with id ${id} not found.`);
                     }
@@ -70,6 +69,8 @@ const CampaignDetails = () => {
                 }
             } catch (error) {
                 console.error('Error initializing campaign details:', error);
+            } finally {
+                setLoading(false);
             }
         };
         init();
@@ -77,6 +78,7 @@ const CampaignDetails = () => {
 
     const handleDonation = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
             if (!web3 || !contract || !campaign) {
                 throw new Error(
@@ -92,6 +94,7 @@ const CampaignDetails = () => {
             const accounts = await web3.eth.getAccounts();
             if (!accounts) {
                 alert('Connect Wallet');
+                return;
             }
             const userAddress = accounts[0];
             await contract.methods.donateToCampaign(id).send({
@@ -127,12 +130,18 @@ const CampaignDetails = () => {
             setCampaign(formattedUpdatedCampaign);
         } catch (error) {
             console.error('Error donating to campaign: ', error);
+        } finally {
+            setLoading(false);
             setDonating(false);
         }
     };
 
-    if (!campaign) {
+    if (loading) {
         return <LoadingContainer>Loading...</LoadingContainer>;
+    }
+
+    if (!campaign) {
+        return <LoadingContainer>Campaign not found</LoadingContainer>;
     }
 
     const filteredDonators = campaign.donators.filter(
@@ -240,7 +249,9 @@ const CampaignDetails = () => {
             </Content>
         </Container>
     );
-};const Container = styled.div`
+};
+
+const Container = styled.div`
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -251,15 +262,6 @@ const CampaignDetails = () => {
     color: #fff;
 `;
 
-const LoadingContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #121212;
-    color: #fff;
-    font-size: 1.2rem;
-`;
 
 const Content = styled.div`
     flex: 1;
@@ -543,5 +545,13 @@ const Description = styled.p`
     }
 `;
 
+const LoadingContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    color: #fff;
+`;
 
 export default CampaignDetails;

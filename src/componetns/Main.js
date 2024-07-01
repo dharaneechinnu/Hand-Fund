@@ -4,12 +4,14 @@ import { abi } from '../Abi';
 import Nav from './Nav';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Loader from './Loader';
 
 const Main = () => {
     const [campaigns, setCampaigns] = useState([]);
     const [web3, setWeb3] = useState(null);
     const [account, setAccount] = useState('');
     const [contract, setContract] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -52,6 +54,8 @@ const Main = () => {
                 }
             } catch (error) {
                 console.error("Error initializing web3: ", error);
+            } finally {
+                setLoading(false); 
             }
         };
         init();
@@ -71,28 +75,32 @@ const Main = () => {
             <Nav onSearch={(query) => console.log('Search query:', query)} />
             <Content>
                 <MainContent>
-                    {filteredCampaigns.map(campaign => (
-                        <ItemCard key={campaign.id} onClick={() => navigateToDetails(campaign.id)}>
-                            <CampaignImage src={campaign.image} alt="Campaign" />
-                            <CampaignDetails>
-                                <CampaignTitle>{campaign.title}</CampaignTitle>
-                                <CampaignDescription>{campaign.description}</CampaignDescription>
-                                <CampaignInfo>
-                                    <div className="one-line">
-                                        <div>
-                                            <p>{`${campaign.amountCollected} ETH`}</p>
-                                            <h5>{`Raised of ${campaign.target} ETH`}</h5>
+                    {loading ? (
+                        <LoadingIndicator><Loader/></LoadingIndicator>
+                     ) : (
+                        filteredCampaigns.map(campaign => (
+                            <ItemCard key={campaign.id} onClick={() => navigateToDetails(campaign.id)}>
+                                <CampaignImage src={campaign.image} alt="Campaign" />
+                                <CampaignDetails>
+                                    <CampaignTitle>{campaign.title}</CampaignTitle>
+                                    <CampaignDescription>{campaign.description}</CampaignDescription>
+                                    <CampaignInfo>
+                                        <div className="one-line">
+                                            <div>
+                                                <p>{`${campaign.amountCollected} ETH`}</p>
+                                                <h5>{`Raised of ${campaign.target} ETH`}</h5>
+                                            </div>
+                                            <div style={{ textAlign: 'left' }}>
+                                                <p>{`${Math.ceil((campaign.deadline - new Date()) / (1000 * 60 * 60 * 24))}`}</p>
+                                                <h5>Days Left</h5>
+                                            </div>
                                         </div>
-                                        <div style={{ textAlign: 'left' }}>
-                                            <p>{`${Math.ceil((campaign.deadline - new Date()) / (1000 * 60 * 60 * 24))}`}</p>
-                                            <h5>Days Left</h5>
-                                        </div>
-                                    </div>
-                                    <p className='owner'>{` ${campaign.owner}`}</p>
-                                </CampaignInfo>
-                            </CampaignDetails>
-                        </ItemCard>
-                    ))}
+                                        <p className='owner'>{` ${campaign.owner}`}</p>
+                                    </CampaignInfo>
+                                </CampaignDetails>
+                            </ItemCard>
+                        ))
+                    )}
                 </MainContent>
             </Content>
         </Container>
@@ -140,7 +148,7 @@ const ItemCard = styled.div`
     color: #fff;
     cursor: pointer;
     display: flex;
-    height: 530px;
+    height: 500px;
     margin-right: 10px;
     flex-direction: column; 
     margin-top   :15px ;
@@ -152,7 +160,7 @@ const ItemCard = styled.div`
 
 const CampaignImage = styled.img`
     width: 100%;
-    height: 300px;
+    height: 250px;
     object-fit: cover; 
     border-bottom: 1px solid #333;
 `;
@@ -186,11 +194,12 @@ const CampaignInfo = styled.div`
 
     p {
         margin: 4px 2px;
-        font-size: 1.1rem;
+        font-size: 1.5rem;
+        font-weight: 600;
     }
 
     h5 {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         margin-top: 5px;
     }
 
@@ -199,6 +208,7 @@ const CampaignInfo = styled.div`
         padding: 5px;
         border: 1px solid black;
         border-radius: 5px;
+        font-size: 1.1rem;
         background-color: black;
     }
 
@@ -232,6 +242,15 @@ const CampaignInfo = styled.div`
             padding: 2px; 
         }
     }
+`;
+
+const LoadingIndicator = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    color: #fff;
 `;
 
 export default Main;

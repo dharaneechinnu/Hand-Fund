@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
-import { abi } from '../Abi'; 
+import { abi } from '../Abi';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
-
 
 const AddCampaign = () => {
     const [web3, setWeb3] = useState(null);
@@ -15,22 +14,29 @@ const AddCampaign = () => {
     const [target, setTarget] = useState('');
     const [deadline, setDeadline] = useState('');
     const [image, setImage] = useState('');
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const initWeb3 = async () => {
-            if (window.ethereum) {
-                const web3Instance = new Web3(window.ethereum);
-                await window.ethereum.enable(); 
-                setWeb3(web3Instance);
+            try {
+                if (window.ethereum) {
+                    const web3Instance = new Web3(window.ethereum);
+                    await window.ethereum.enable();
+                    setWeb3(web3Instance);
 
-                const accounts = await web3Instance.eth.getAccounts();
-                setAccount(accounts[0]);
+                    const accounts = await web3Instance.eth.getAccounts();
+                    setAccount(accounts[0]);
 
-                const contractInstance = new web3Instance.eth.Contract(abi, "0x4cd06B44D049536dBD3c4D5e645055F8bC3c3498");
-                setContract(contractInstance);
-            } else {
-                console.error("Web3 provider not detected. Please install MetaMask.");
+                    const contractInstance = new web3Instance.eth.Contract(abi, "0x4cd06B44D049536dBD3c4D5e645055F8bC3c3498");
+                    setContract(contractInstance);
+                } else {
+                    console.error("Web3 provider not detected. Please install MetaMask.");
+                }
+            } catch (error) {
+                console.error("Error initializing Web3: ", error);
+            } finally {
+                setLoading(false);
             }
         };
         initWeb3();
@@ -38,6 +44,7 @@ const AddCampaign = () => {
 
     const handleAddCampaign = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
             const targetWei = web3.utils.toWei(target.toString(), 'ether'); // Convert target amount to Wei
             const deadlineUnix = Math.floor(new Date(deadline).getTime() / 1000); // Convert deadline to Unix timestamp
@@ -47,54 +54,60 @@ const AddCampaign = () => {
             alert("Added Campaign Successfully");
         } catch (error) {
             console.error("Error creating campaign: ", error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <Container>
-            <Nav/>
+            <Nav />
             <Content>
-              
-                <MainContent>
-                    <FormContainer>
-                        <div className="ti">
-                    <h2 className='title'>Start A Campaign 🚀</h2>
-                    </div>
-                        <form onSubmit={handleAddCampaign}>
-                            <FormRow>
+                {loading ? (
+                    <LoadingIndicator>Loading...</LoadingIndicator>
+                ) : (
+                    <MainContent>
+                        <FormContainer>
+                            <div className="ti">
+                                <h2 className='title'>Start A Campaign 🚀</h2>
+                            </div>
+                            <form onSubmit={handleAddCampaign}>
+                                <FormRow>
+                                    <FormColumn>
+                                        <label>Title</label>
+                                        <input type="text" placeholder='Enter Title' value={title} onChange={(e) => setTitle(e.target.value)} required />
+                                    </FormColumn>
+                                    <FormColumn>
+                                        <label>Target (ETH)</label>
+                                        <input type="number" placeholder='Enter Amount in ETH' step="0.01" value={target} onChange={(e) => setTarget(e.target.value)} required />
+                                    </FormColumn>
+                                </FormRow>
                                 <FormColumn>
-                                    <label>Title</label>
-                                    <input type="text" placeholder='Enter Title' value={title} onChange={(e) => setTitle(e.target.value)} required />
+                                    <label>Description</label>
+                                    <textarea value={description} placeholder='Description' onChange={(e) => setDescription(e.target.value)} required />
                                 </FormColumn>
-                                <FormColumn>
-                                    <label>Target (ETH)</label>
-                                    <input type="number" placeholder='Enter Amount in ETH' step="0.01" value={target} onChange={(e) => setTarget(e.target.value)} required />
-                                </FormColumn>
-                            </FormRow>
-                            <FormColumn>
-                                <label>Description</label>
-                                <textarea value={description} placeholder='Description' onChange={(e) => setDescription(e.target.value)} required />
-                            </FormColumn>
-                            <FormRow>
-                                <FormColumn>
-                                    <label>Deadline</label>
-                                    <input type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
-                                </FormColumn>
-                                <FormColumn>
-                                    <label>Image URL</label>
-                                    <input type="url" placeholder='Image URL' value={image} onChange={(e) => setImage(e.target.value)} />
-                                </FormColumn>
-                            </FormRow>
-                            <ButtonContainer>
-                                <button type="submit">Create Campaign</button>
-                            </ButtonContainer>
-                        </form>
-                    </FormContainer>
-                </MainContent>
+                                <FormRow>
+                                    <FormColumn>
+                                        <label>Deadline</label>
+                                        <input type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
+                                    </FormColumn>
+                                    <FormColumn>
+                                        <label>Image URL</label>
+                                        <input type="url" placeholder='Image URL' value={image} onChange={(e) => setImage(e.target.value)} />
+                                    </FormColumn>
+                                </FormRow>
+                                <ButtonContainer>
+                                    <button type="submit">Create Campaign</button>
+                                </ButtonContainer>
+                            </form>
+                        </FormContainer>
+                    </MainContent>
+                )}
             </Content>
         </Container>
     );
 };
+
 const Container = styled.div`
     width: 100vw;
     min-height: 100vh;
@@ -162,14 +175,14 @@ const FormContainer = styled.div`
         border-radius: 4px;
         background: transparent;
         width: 100%;
-        max-width: 600px; /* Ensures the inputs don't get too wide on large screens */
+        max-width: 600px;
         color: white;
     }
 
     textarea {
         max-width: 100%;
-        min-height: 150px; /* Adjust height for textarea */
-        resize: vertical; /* Allow vertical resizing */
+        min-height: 150px;
+        resize: vertical;
     }
 
     @media (max-width: 768px) {
@@ -224,5 +237,13 @@ const ButtonContainer = styled.div`
     }
 `;
 
+const LoadingIndicator = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.5rem;
+    color: #fff;
+`;
 
 export default AddCampaign;
